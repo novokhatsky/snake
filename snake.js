@@ -12,6 +12,18 @@ function clearCanvas() {
     //context.clearRect(0, 0, canvas.width, canvas.height);
 }
 
+function setGameEnd() {
+    game_end = true;
+}
+
+function snakeGrow() {
+    snake_grow = 1;
+}
+
+function makeFood() {
+    getRandomFreeCell(map).food = true;
+}
+
 function createGameMap(columns, rows) {
     const map = [];
 
@@ -108,22 +120,35 @@ function moveSnake(snake_grow = false) {
         snake[i] = snake[i - 1];
     }
 
+    let new_position;
+
     if (snakeDirect === 'left') {
-        snake[0] = getCell(snake[0].x - 1, snake[0].y);
+        new_position = getCell(snake[0].x - 1, snake[0].y);
     }
 
     if (snakeDirect === 'right') {
-        snake[0] = getCell(snake[0].x + 1, snake[0].y);
+        new_position = getCell(snake[0].x + 1, snake[0].y);
     }
 
     if (snakeDirect === 'up') {
-        snake[0] = getCell(snake[0].x, snake[0].y - 1);
+        new_position = getCell(snake[0].x, snake[0].y - 1);
     }
 
     if (snakeDirect === 'down') {
-        snake[0] = getCell(snake[0].x, snake[0].y + 1);
+        new_position = getCell(snake[0].x, snake[0].y + 1);
     }
 
+    if (new_position.snake == true) {
+        setGameEnd();
+    }
+
+    snake[0] = new_position;
     snake[0].snake = true;
+
+    if (new_position.food == true) {
+        snakeGrow();
+        map[new_position.x][new_position.y].food = false;
+        makeFood();
+    }
 }
 

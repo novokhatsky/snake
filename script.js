@@ -17,10 +17,17 @@ const context = canvas.getContext('2d');
 canvas.width = COLUMNS * (CELL_SIZE + CELL_MARGIN) + (2 * GAME_PADDING) - CELL_MARGIN;
 canvas.height = ROWS * (CELL_SIZE + CELL_MARGIN) + (2 * GAME_PADDING) - CELL_MARGIN;
 
-let snake_grow = 4;
+let snake_grow = 0;
+let game_end = false;
 
 function loop(timestamp) {
-    requestAnimationFrame(loop);
+    if (!game_end) {
+        requestAnimationFrame(loop);
+    } else {
+        clearCanvas();
+        console.log(snake.length);
+        return;
+    }
 
     if ((prevTick + COOLDOWN) <= timestamp) {
         clearCanvas();
@@ -56,20 +63,29 @@ drawGameMap(map);
 requestAnimationFrame(loop);
 
 document.addEventListener("keydown", function (event) {
+
     if (event.key === "ArrowUp") {
-        snakeDirect = 'up';
+        if (!(snake.length !== 1 && snakeDirect === 'down')) {
+            snakeDirect = 'up';
+        }
     }
 
     if (event.key === "ArrowDown") {
-        snakeDirect = 'down';
+        if (!(snake.length !== 1 && snakeDirect === 'up')) {
+            snakeDirect = 'down';
+        }
     }
 
     if (event.key === "ArrowLeft") {
-        snakeDirect = 'left';
+        if (!(snake.length !== 1 && snakeDirect === 'right')) {
+            snakeDirect = 'left';
+        }
     }
 
     if (event.key === "ArrowRight") {
-        snakeDirect = 'right';
+        if (!(snake.length !== 1 && snakeDirect === 'left')) {
+            snakeDirect = 'right';
+        }
     }
-})
+});
 
